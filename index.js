@@ -1,4 +1,4 @@
-// Copyright 2020 The Oppia Authors. All Rights Reserved.
+/ Copyright 2020 The Oppia Authors. All Rights Reserved.
 //
 // Licensed under the Apache License, Version 2.0 (the "License");
 // you may not use this file except in compliance with the License.
@@ -32,6 +32,7 @@ const checkCriticalPullRequestModule = require(
 );
 const checkBranchPushModule = require('./lib/checkBranchPush');
 const checkPullRequestReviewModule = require('./lib/checkPullRequestReview');
+const newCodeOwnerModule = require('./lib/checkForNewCodeowner');
 const ciCheckModule = require('./lib/ciChecks');
 const periodicCheckModule = require('./lib/periodicChecks');
 
@@ -83,8 +84,7 @@ const runChecks = async (context, checkEvent) => {
             );
             break;
           case constants.jobCheck:
-            callable.push(
-              checkPullRequestJobModule.checkForModificationsToFiles(context));
+            callable.push(checkPullRequestJobModule.checkForNewJob(context));
             break;
           case constants.cronJobCheck:
             callable.push(checkCronJobModule.checkForNewCronJob(context));
@@ -131,6 +131,9 @@ const runChecks = async (context, checkEvent) => {
             callable.push(
               checkPullRequestReviewModule.handlePullRequestReview(context)
             );
+            break;
+          case constants.codeOwnerCheck:
+            callable.push(newCodeOwnerModule.checkForNewCodeowner(context));
             break;
           case constants.ciFailureCheck:
             callable.push(ciCheckModule.handleFailure(context));
